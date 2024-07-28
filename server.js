@@ -89,7 +89,7 @@ app.get('/auth/google/callback',
 
 // Rutas de Instagram
 app.get('/auth/instagram',
-  passport.authenticate('instagram')
+  passport.authenticate('instagram', { scope: ['user_profile', 'user_media']})
 );
 
 app.get('/auth/instagram/callback',
