@@ -1,3 +1,4 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,9 +8,18 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const InstagramStrategy = require('passport-instagram').Strategy;
 const path = require('path');
+const pg = require('pg'); //PostgreSQL
+
 require('dotenv').config(); // Importa dotenv para manejar variables de entorno
 
+
+
 const app = express();
+const pool = new pg.Pool ({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+})
+
 const port = 3200;
 
 // Configuración de Passport
@@ -107,6 +117,12 @@ app.get('/profile', (req, res) => {
   }
   res.json({ user: req.user });
 });
+
+app.get('/ping', async(req, res) => {
+  const result = await pool.query('SELECT NOW()');
+  return res.json(result.rows[0]);
+  
+})
 
 // Iniciar el servidor HTTP
 app.listen(port, () => {
