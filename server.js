@@ -34,6 +34,116 @@ passport.use(new FacebookStrategy({
   }
 ));
 
+
+// Ruta para solicitar fotos del usuario
+app.get('/api/facebook/photos', async (req, res) => {
+  try {
+    // Leer el token desde el archivo
+    const data = fs.readFileSync('user_data.txt', 'utf8');
+
+    // Extraer el token de los datos leídos
+    const tokenMatch = data.match(/Token: (.*)/);
+    const accessToken = tokenMatch ? tokenMatch[1] : null;
+
+    if (!accessToken) {
+      return res.status(400).send({ message: 'Token no encontrado' });
+    }
+
+    // Realizar la solicitud a la API de Facebook
+    const response = await axios.get(`https://graph.facebook.com/me`, {
+      params: {
+        fields: 'photos{images},about',
+        access_token: accessToken
+      }
+    });
+
+    // Enviar la respuesta al cliente
+    res.send(response.data);
+  } catch (error) {
+    if (error.response) {
+      res.status(500).send(error.response.data);
+    } else {
+      res.status(500).send({ message: 'An error occurred', error: error.message });
+    }
+  }
+});
+
+
+// Ruta para guardar el nombre de la imagen seleccionada en un archivo .txt
+app.post('/api/save-photo-name', async (req, res) => {
+  const photoId = req.body.photoId;
+
+  try {
+    // Leer el token desde el archivo
+    const data = fs.readFileSync('user_data.txt', 'utf8');
+    const tokenMatch = data.match(/Token: (.*)/);
+    const accessToken = tokenMatch ? tokenMatch[1] : null;
+
+    if (!accessToken) {
+      return res.status(400).send({ message: 'Token no encontrado' });
+    }
+
+    // Realizar la solicitud a la API de Facebook para obtener el nombre de la foto
+    const response = await axios.get(`https://graph.facebook.com/${photoId}`, {
+      params: {
+        fields: 'name',
+        access_token: accessToken
+      }
+    });
+
+    const photoName = response.data.name;
+
+    // Sobrescribir el archivo con el nuevo nombre de la foto
+    fs.writeFileSync('selected_photos.txt', `${photoName}\n`);
+    console.log(`Nombre de la foto guardado: ${photoName}`);
+
+    res.status(200).send({ message: 'Nombre de la foto guardado exitosamente' });
+  } catch (error) {
+    if (error.response) {
+      res.status(500).send(error.response.data);
+    } else {
+      res.status(500).send({ message: 'An error occurred', error: error.message });
+    }
+  }
+});
+
+
+// Ruta para obtener los nombres de las fotos seleccionadas
+app.get('/api/photo-names', (req, res) => {
+  try {
+    // Leer el archivo selected_photos.txt
+    const data = fs.readFileSync('selected_photos.txt', 'utf8');
+
+    // Dividir el contenido del archivo en un array de nombres, eliminando las líneas vacías
+    const photoNames = data.split('\n').filter(name => name.trim() !== '');
+
+    res.status(200).send(photoNames);
+  } catch (error) {
+    res.status(500).send({ message: 'Error al leer el archivo', error: error.message });
+  }
+});
+
+app.get('/api/user-name', (req, res) => {
+  fs.readFile('user_data.txt', 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).send({ message: 'Error al leer el archivo', error: err });
+    }
+
+    // Extraer el nombre del archivo
+    const nameMatch = data.match(/Name: (.*)/);
+    const name = nameMatch ? nameMatch[1] : null;
+
+    if (!name) {
+      return res.status(400).send({ message: 'Nombre no encontrado' });
+    }
+
+    res.send({ name: name });
+  });
+});
+
+
+
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
