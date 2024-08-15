@@ -188,7 +188,7 @@ app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   function(req, res) {
     const user = req.user;
-    const redirectUrl = `https://hangaroasorteo.onrender.com?token=${user.token}&id=${user.profile.id}&name=${user.profile.displayName}`;
+    const redirectUrl = `https://hangaroasorteo.onrender.com/posts`;
     res.redirect(redirectUrl);
   }
 );
