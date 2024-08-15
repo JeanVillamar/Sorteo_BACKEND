@@ -172,6 +172,12 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
+// Configuración de CORS
+app.use(cors({
+  origin: 'https://hangaroasorteo.onrender.com', // Reemplaza con la URL de tu frontend
+  credentials: true // Esto permite el envío de cookies y otros credenciales
+}));
+
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
