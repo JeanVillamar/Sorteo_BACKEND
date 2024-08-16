@@ -26,7 +26,7 @@ const port = 3200;
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: 'https://sistemasorteos.onrender.com/auth/facebook/callback',
+    callbackURL: 'https://xaviercobos.pythonanywhere.com/auth/facebook/callback',
     profileFields: ['id', 'displayName', 'email']
   },
   function(accessToken, refreshToken, profile, done) {
@@ -147,7 +147,7 @@ app.get('/api/user-name', (req, res) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: 'https://sistemasorteos.onrender.com/auth/google/callback'
+    callbackURL: 'https://xaviercobos.pythonanywhere.com/auth/google/callback'
   },
   function(token, tokenSecret, profile, done) {
     return done(null, { profile: profile, token: token });
@@ -157,7 +157,7 @@ passport.use(new GoogleStrategy({
 passport.use(new InstagramStrategy({
     clientID: process.env.INSTAGRAM_CLIENT_ID,
     clientSecret: process.env.INSTAGRAM_CLIENT_SECRET,
-    callbackURL: 'https://sistemasorteos.onrender.com/auth/instagram/callback'
+    callbackURL: 'https://xaviercobos.pythonanywhere.com/home/auth/instagram/callback'
   },
   function(accessToken, refreshToken, profile, done) {
     return done(null, { profile: profile, token: accessToken });
@@ -174,7 +174,7 @@ passport.deserializeUser(function(obj, done) {
 
 // Configuración de CORS
 app.use(cors({
-  origin: 'https://hangaroasorteo.onrender.com', // Reemplaza con la URL de tu frontend
+  origin: 'https://xaviercobos.pythonanywhere.com', // Reemplaza con la URL de tu frontend
   credentials: true // Esto permite el envío de cookies y otros credenciales
 }));
 
@@ -194,7 +194,7 @@ app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   function(req, res) {
     const user = req.user;
-    const redirectUrl = `https://hangaroasorteo.onrender.com/posts`;
+    const redirectUrl = `https://xaviercobos.pythonanywhere.com/posts`;
     res.redirect(redirectUrl);
   }
 );
@@ -208,7 +208,7 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/' }),
   function(req, res) {
     const user = req.user;
-    const redirectUrl = `https://hangaroasorteo.onrender.com?token=${user.token}&id=${user.profile.id}&name=${user.profile.displayName}`;
+    const redirectUrl = `https://xaviercobos.pythonanywhere.com/home`;
     res.redirect(redirectUrl);
   }
 );

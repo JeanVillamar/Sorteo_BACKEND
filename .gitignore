@@ -8,12 +8,6 @@ yarn-error.log
 logs/
 *.log
 
-# Backend (Express)
-backend/node_modules/
-backend/.env
-backend/npm-debug.log
-backend/yarn-error.log
-backend/dist/
 
 # IDEs and editors
 .vscode/
