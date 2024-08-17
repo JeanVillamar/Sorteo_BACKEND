@@ -194,7 +194,7 @@ app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
   function(req, res) {
     const user = req.user;
-    const redirectUrl = `https://xaviercobos.pythonanywhere.com/posts`;
+    const redirectUrl = `https://xaviercobos.pythonanywhere.com/home`;
     res.redirect(redirectUrl);
   }
 );
